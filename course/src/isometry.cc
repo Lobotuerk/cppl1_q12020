@@ -244,5 +244,86 @@ namespace ekumen {
     return Matrix3(n00, n01, n02, n10, n11, n12, n20, n21, n22);
   }
 
+  // Isometry
+
+  bool Isometry::operator == (const Isometry & obj) const
+  {
+    return ((rotation_ == obj.rotation()) && (point_ == obj.point()));
+  }
+
+  Vector3 Isometry::operator *= (const Vector3 & obj) const
+  {
+    return Vector3(rotation_.dot(obj) + point_);
+  }
+
+  Isometry Isometry::operator *= (const Isometry & obj) const
+  {
+    Matrix3 new_rotation = rotation_.dot(obj.rotation());
+    Vector3 new_point = rotation_.dot(obj.point()) + point_;
+    return Isometry(new_point, new_rotation);
+  }
+
+  Vector3 Isometry::transform (const std::initializer_list<double> & obj) const
+  {
+    Vector3 temp(obj);
+    return Vector3(rotation_.dot(temp) + point_);
+  }
+
+  Isometry Isometry::inverse () const
+  {
+    double det = rotation_.det();
+    if (det == 0)
+    {
+      throw std::runtime_error("Matrix is not invertable");
+    }
+    Matrix3 new_rotation(
+        (rotation_[1][1] * rotation_[2][2] - rotation_[1][2] * rotation_[2][1]) / det,
+        (rotation_[1][0] * rotation_[2][2] - rotation_[1][2] * rotation_[2][0]) / det * -1,
+        (rotation_[1][0] * rotation_[2][1] - rotation_[1][1] * rotation_[2][0]) / det,
+        (rotation_[0][1] * rotation_[2][2] - rotation_[0][2] * rotation_[2][1]) / det * -1,
+        (rotation_[0][0] * rotation_[2][2] - rotation_[0][2] * rotation_[2][0]) / det,
+        (rotation_[0][0] * rotation_[2][1] - rotation_[0][1] * rotation_[2][0]) / det * -1,
+        (rotation_[0][1] * rotation_[1][2] - rotation_[0][2] * rotation_[1][1]) / det,
+        (rotation_[0][0] * rotation_[1][2] - rotation_[0][2] * rotation_[1][0]) / det * -1,
+        (rotation_[0][0] * rotation_[1][1] - rotation_[0][1] * rotation_[1][0]) / det
+      );
+    Vector3 new_point(new_rotation.dot(point_));
+    return Isometry(-1 * new_point, new_rotation);
+  }
+
+  Isometry Isometry::RotateAround(const Vector3 & point, const double & angle)
+  {
+    double cos{std::cos(angle)};
+    double sin{std::sin(angle)};
+
+    Matrix3 new_rotation;
+    if (point == Vector3::kUnitX) {
+        new_rotation = Matrix3(1., 0., 0.,
+                             0., cos, -sin,
+                             0., sin, cos);
+    }
+    else if (point == Vector3::kUnitY) {
+        new_rotation = Matrix3(cos, 0., sin,
+                             0., 1., 0.,
+                             -sin, 0., cos);
+    }
+    else if (point == Vector3::kUnitZ) {
+        new_rotation = Matrix3(cos, -sin, 0.,
+                             sin, cos, 0.,
+                             0., 0., 1.);
+    }
+    else {
+        throw std::runtime_error("Invalid rotation axis");
+    }
+    return Isometry(Vector3(), new_rotation);
+  }
+
+  Isometry Isometry::FromEulerAngles(const double & roll, const double & pitch, const double & yaw)
+  {
+    return Isometry(Isometry::RotateAround(Vector3::kUnitX, roll) *
+                    Isometry::RotateAround(Vector3::kUnitY, pitch) *
+                    Isometry::RotateAround(Vector3::kUnitZ, yaw));
+  }
+
 }
 }

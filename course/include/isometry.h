@@ -109,5 +109,35 @@ class Matrix3 {
 
 Matrix3 operator * (const double & obj1, const Matrix3 & obj2);
 
+class Isometry {
+  public:
+    Isometry(std::initializer_list<double> point, const Matrix3 & rotation): point_(point), rotation_(rotation) {};
+    Isometry(const Vector3 & point, const Matrix3 & rotation): point_(point), rotation_(rotation) {};
+    Isometry(const Isometry & obj): point_(obj.point()), rotation_(obj.rotation()) {};
+    static Isometry FromTranslation(std::initializer_list<double> point){return Isometry(point, Matrix3::kIdentity);};
+    static Isometry RotateAround(const Vector3 & point, const double & angle);
+    static Isometry FromEulerAngles(const double & roll, const double & pitch, const double & yaw);
+
+    const Vector3 & point() const {return point_;};
+    const Matrix3 & rotation() const {return rotation_;};
+
+    bool operator == (const Isometry & obj) const;
+    Vector3 operator *= (const Vector3 & obj) const;
+    Vector3 operator * (const Vector3 & obj) const {return *this *= obj;};
+    Isometry operator *= (const Isometry & obj) const;
+    Isometry operator * (const Isometry & obj) const {return *this *= obj;};
+    Vector3 transform (const std::initializer_list<double> & obj) const;
+    Isometry inverse () const;
+    Isometry compose(const Isometry & obj) const {return *this *= obj;};
+
+    friend std::ostream& operator << (std::ostream & os, const Isometry & v) {
+              os << std::string("[T: ") << v.point() << ", R:" << v.rotation();
+              return os;
+          };
+  private:
+    Vector3 point_;
+    Matrix3 rotation_;
+};
+
 }  // math
 }  // ekumen
