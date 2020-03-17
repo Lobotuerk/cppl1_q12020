@@ -39,6 +39,26 @@ namespace {
     return testing::AssertionFailure() << "The isometrys are not almost equal";
   }
 
+  testing::AssertionResult areAlmostEqual(const Matrix3 & obj1, const Matrix3 & obj2, const double tolerance)
+  {
+    double diff = 0.;
+    diff += std::abs(obj1[0][0] - obj2[0][0]);
+    diff += std::abs(obj1[0][1] - obj2[0][1]);
+    diff += std::abs(obj1[0][2] - obj2[0][2]);
+    diff += std::abs(obj1[1][0] - obj2[1][0]);
+    diff += std::abs(obj1[1][1] - obj2[1][1]);
+    diff += std::abs(obj1[1][2] - obj2[1][2]);
+    diff += std::abs(obj1[2][0] - obj2[2][0]);
+    diff += std::abs(obj1[2][1] - obj2[2][1]);
+    diff += std::abs(obj1[2][2] - obj2[2][2]);
+
+    if (diff < tolerance)
+    {
+      return testing::AssertionSuccess();
+    }
+    return testing::AssertionFailure() << "The isometrys are not almost equal";
+  }
+
 GTEST_TEST(Vector3Test, Vector3Operations) {
   const double kTolerance{1e-12};
   const Vector3 p{1., 2., 3.};
@@ -142,11 +162,11 @@ GTEST_TEST(IsometryTest, IsometryOperations) {
   // See https://github.com/google/googletest/blob/master/googletest/docs/advanced.md#using-a-function-that-returns-an-assertionresult
   EXPECT_TRUE(areAlmostEqual(t6, t3 * t4 * t5, kTolerance));
 
-  // EXPECT_EQ(t3.translation(), Vector3::kZero);
-  // const double pi_8{M_PI / 8.};
-  // const double cpi_8{std::cos(pi_8)};  // 0.923879532
-  // const double spi_8{std::sin(pi_8)};  // 0.382683432
-  // EXPECT_TRUE(areAlmostEqual(t5.rotation(), Matrix3{cpi_8, -spi_8, 0., spi_8, cpi_8, 0., 0., 0., 1.}, kTolerance));
+  EXPECT_EQ(t3.translation(), Vector3::kZero);
+  const double pi_8{M_PI / 8.};
+  const double cpi_8{std::cos(pi_8)};  // 0.923879532
+  const double spi_8{std::sin(pi_8)};  // 0.382683432
+  EXPECT_TRUE(areAlmostEqual(t5.rotation(), Matrix3{cpi_8, -spi_8, 0., spi_8, cpi_8, 0., 0., 0., 1.}, kTolerance));
 
   std::stringstream ss;
   ss << t5;

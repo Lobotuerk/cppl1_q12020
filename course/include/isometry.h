@@ -6,6 +6,7 @@
 #include <sstream>
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 
 namespace ekumen {
   namespace math {
@@ -98,11 +99,11 @@ class Matrix3 {
     Vector3 dot(const Vector3 & obj) const;
     Matrix3 dot(const Matrix3 & obj) const;
     friend std::ostream& operator << (std::ostream & os, const Matrix3 & v) {
-              os << std::string("[[") << v[0][0] << ", " << v[0][1] << ", " << v[0][2] << "], [";
-              os << v[1][0] << ", " << v[1][1] << ", " << v[1][2] << "], [";
-              os << v[2][0] << ", " << v[2][1] << ", " << v[2][2] << "]]";
+              os << std::string("[[") << std::setprecision(9) << v[0][0] << ", " << std::setprecision(9) << v[0][1] << ", " << std::setprecision(9) << v[0][2] << "], [";
+              os << std::setprecision(9) << v[1][0] << ", " << std::setprecision(9) << v[1][1] << ", " << std::setprecision(9) << v[1][2] << "], [";
+              os << std::setprecision(9) << v[2][0] << ", " << std::setprecision(9) << v[2][1] << ", " << std::setprecision(9)<< v[2][2] << "]]";
               return os;
-          }; //TODO INCREASE NUMBERS TO 4 DECIMALS
+          };
   private:
     Vector3 row1_, row2_, row3_;
 };
@@ -120,6 +121,7 @@ class Isometry {
 
     const Vector3 & point() const {return point_;};
     const Matrix3 & rotation() const {return rotation_;};
+    const Vector3 & translation() const {return point_;};
 
     bool operator == (const Isometry & obj) const;
     Vector3 operator *= (const Vector3 & obj) const;
@@ -131,7 +133,7 @@ class Isometry {
     Isometry compose(const Isometry & obj) const {return *this *= obj;};
 
     friend std::ostream& operator << (std::ostream & os, const Isometry & v) {
-              os << std::string("[T: ") << v.point() << ", R:" << v.rotation();
+              os << std::string("[T: ") << v.point() << ", R:" << v.rotation() << "]";
               return os;
           };
   private:
