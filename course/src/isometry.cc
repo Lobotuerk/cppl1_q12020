@@ -48,7 +48,12 @@ namespace ekumen {
     {
       throw std::runtime_error("Size of list not valid");
     }
-    if ( (obj.begin()[0] != x_) || (obj.begin()[1] != y_) || (obj.begin()[2] != z_) )
+    auto it = obj.begin();
+    double x_list, y_list, z_list;
+    x_list = *it++;
+    y_list = *it++;
+    z_list = *it;
+    if ( (x_list != x_) || (y_list != y_) || (z_list != z_) )
     {
       return false;
     }
