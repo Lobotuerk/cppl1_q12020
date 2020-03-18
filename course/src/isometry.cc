@@ -116,9 +116,18 @@ namespace ekumen {
     {
       throw std::runtime_error("Index not valid");
     }
-    else if (index == 0) return x_;
-    else if (index == 1) return y_;
-    else return z_;
+    else if (index == 0)
+    {
+      return x_;
+    }
+    else if (index == 1)
+    {
+      return y_;
+    }
+    else
+    {
+      return z_;
+    }
   }
 
   Vector3 Vector3::cross(const Vector3 & obj) const
