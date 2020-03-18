@@ -10,14 +10,36 @@ namespace ekumen {
   const Vector3 Vector3::kUnitZ(0., 0., 1.);
   const Vector3 Vector3::kZero(0., 0., 0.);
 
-  Vector3 Vector3::operator += (const Vector3 & obj) const
+  Vector3 & Vector3::operator *= (const double & obj)
   {
-    return Vector3( x_ + obj.x(), y_ + obj.y(),z_ +  obj.z());
+    x_ *= obj;
+    y_ *= obj;
+    z_ *=  obj;
+    return *this;
   }
 
-  Vector3 Vector3::operator -= (const Vector3 & obj) const
+  Vector3 & Vector3::operator /= (const double & obj)
   {
-    return Vector3( x_ - obj.x(), y_ - obj.y(),z_ -  obj.z());
+    x_ /= obj;
+    y_ /= obj;
+    z_ /=  obj;
+    return *this;
+  }
+
+  Vector3 & Vector3::operator += (const Vector3 & obj)
+  {
+    x_ += obj.x();
+    y_ += obj.y();
+    z_ +=  obj.z();
+    return *this;
+  }
+
+  Vector3 & Vector3::operator -= (const Vector3 & obj)
+  {
+    x_ -= obj.x();
+    y_ -= obj.y();
+    z_ -=  obj.z();
+    return *this;
   }
 
   bool Vector3::operator == (const std::initializer_list<double> & obj) const
@@ -42,26 +64,21 @@ namespace ekumen {
     return true;
   }
 
-  Vector3 Vector3::operator *= (const Vector3 & obj) const
+  Vector3 & Vector3::operator *= (const Vector3 & obj)
   {
-    return Vector3(x_ * obj.x(), y_ * obj.y(), z_ * obj.z());
+    x_ *= obj.x();
+    y_ *= obj.y();
+    z_ *=  obj.z();
+    return *this;
   }
 
-  Vector3 Vector3::operator /= (const Vector3 & obj) const
+  Vector3 & Vector3::operator /= (const Vector3 & obj)
   {
-    return Vector3(x_ / obj.x(), y_ / obj.y(), z_ / obj.z());
+    x_ /= obj.x();
+    y_ /= obj.y();
+    z_ /=  obj.z();
+    return *this;
   }
-
-  Vector3 Vector3::operator *= (const double & obj) const
-  {
-    return Vector3(x_ * obj, y_ * obj, z_ * obj);
-  }
-
-  Vector3 Vector3::operator /= (const double & obj) const
-  {
-    return Vector3(x_ / obj, y_ / obj, z_ / obj);
-  }
-
 
   double Vector3::norm() const
   {

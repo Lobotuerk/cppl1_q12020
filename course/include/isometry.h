@@ -32,22 +32,22 @@ class Vector3 {
 
   const double & operator [] (const int index) const;
   double & operator [] (const int index);
-  Vector3 operator += (const Vector3 & obj) const;
-  Vector3 operator -= (const Vector3 & obj) const;
-  Vector3 operator *= (const Vector3 & obj) const;
-  Vector3 operator /= (const Vector3 & obj) const;
-  Vector3 operator + (const Vector3 & obj) const {return *this += obj;};
-  Vector3 operator - (const Vector3 & obj) const {return *this -= obj;};
-  Vector3 operator * (const Vector3 & obj) const {return *this *= obj;};
-  Vector3 operator / (const Vector3 & obj) const {return *this /= obj;};
+  Vector3 & operator += (const Vector3 & obj);
+  Vector3 & operator -= (const Vector3 & obj);
+  Vector3 & operator *= (const Vector3 & obj);
+  Vector3 & operator /= (const Vector3 & obj);
+  Vector3 operator + (const Vector3 & obj) const {return Vector3(*this) += obj;};
+  Vector3 operator - (const Vector3 & obj) const {return Vector3(*this) -= obj;};
+  Vector3 operator * (const Vector3 & obj) const {return Vector3(*this) *= obj;};
+  Vector3 operator / (const Vector3 & obj) const {return Vector3(*this) /= obj;};
   bool operator == (const std::initializer_list<double> & obj) const;
   bool operator == (const Vector3 & obj) const;
   bool operator != (const std::initializer_list<double> & obj) const {return !(*this == obj);};
   bool operator != (const Vector3 & obj) const {return !(*this == obj);};
-  Vector3 operator *= (const double & obj) const;
-  Vector3 operator /= (const double & obj) const;
-  Vector3 operator * (const double & obj) const {return *this *= obj;};
-  Vector3 operator / (const double & obj) const {return *this /= obj;};
+  Vector3 & operator *= (const double & obj);
+  Vector3 & operator /= (const double & obj);
+  Vector3 operator * (const double & obj) const {return Vector3(*this) *= obj;};
+  Vector3 operator / (const double & obj) const {return Vector3(*this) /= obj;};
 
   Vector3 cross(const Vector3 & obj) const;
   double dot(const Vector3 & obj) const;
