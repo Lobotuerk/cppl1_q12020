@@ -5,10 +5,9 @@ int main(int argc, char **argv) {
   (void) argc;
   (void) argv;
 
-  ekumen::math::Vector3 v1{1., 2., 3.};
-  const ekumen::math::Vector3 q{4., 5., 6.};
+  ekumen::math::Matrix3 m1{{1., 2., 3.}, {4., 5., 6.}, {7., 8., 9.}};
+  const ekumen::math::Matrix3 m2{1., 2., 3., 4., 5., 6., 7., 8., 9.};
 
-  v1 += q;
-  std::cout << v1 << std::endl;
+  std::cout << m1 * m2 << std::endl;
   return 0;
 }
