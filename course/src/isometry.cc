@@ -266,7 +266,7 @@ namespace ekumen {
     return *this;
   }
 
-  Vector3 Matrix3::operator * (const Vector3 & obj)
+  Vector3 Matrix3::operator * (const Vector3 & obj) const
   {
     double new_x = (row1_[0] * obj[0]) + (row1_[1] * obj[1]) + (row1_[2] * obj[2]);
     double new_y = (row2_[0] * obj[0]) + (row2_[1] * obj[1]) + (row2_[2] * obj[2]);
@@ -312,28 +312,6 @@ namespace ekumen {
     return Vector3(row1_[index], row2_[index], row3_[index]);
   }
 
-  Vector3 Matrix3::dot(const Vector3 & obj) const
-  {
-    double new_x = (row1_[0] * obj[0]) + (row1_[1] * obj[1]) + (row1_[2] * obj[2]);
-    double new_y = (row2_[0] * obj[0]) + (row2_[1] * obj[1]) + (row2_[2] * obj[2]);
-    double new_z = (row3_[0] * obj[0]) + (row3_[1] * obj[1]) + (row3_[2] * obj[2]);
-    return Vector3(new_x, new_y, new_z);
-  }
-
-  Matrix3 Matrix3::dot(const Matrix3 & obj) const
-  {
-    double n00 = row1_[0] * obj[0][0] + row1_[1] * obj[1][0] + row1_[2] * obj[2][0];
-    double n01 = row1_[0] * obj[0][1] + row1_[1] * obj[1][1] + row1_[2] * obj[2][1];
-    double n02 = row1_[0] * obj[0][2] + row1_[1] * obj[1][2] + row1_[2] * obj[2][2];
-    double n10 = row2_[0] * obj[0][0] + row2_[1] * obj[1][0] + row2_[2] * obj[2][0];
-    double n11 = row2_[0] * obj[0][1] + row2_[1] * obj[1][1] + row2_[2] * obj[2][1];
-    double n12 = row2_[0] * obj[0][2] + row2_[1] * obj[1][2] + row2_[2] * obj[2][2];
-    double n20 = row3_[0] * obj[0][0] + row3_[1] * obj[1][0] + row3_[2] * obj[2][0];
-    double n21 = row3_[0] * obj[0][1] + row3_[1] * obj[1][1] + row3_[2] * obj[2][1];
-    double n22 = row3_[0] * obj[0][2] + row3_[1] * obj[1][2] + row3_[2] * obj[2][2];
-    return Matrix3(n00, n01, n02, n10, n11, n12, n20, n21, n22);
-  }
-
   // Isometry
 
   bool Isometry::operator == (const Isometry & obj) const
@@ -343,20 +321,20 @@ namespace ekumen {
 
   Vector3 Isometry::operator *= (const Vector3 & obj) const
   {
-    return Vector3(rotation_.dot(obj) + point_);
+    return Vector3(rotation_ * obj + point_);
   }
 
   Isometry Isometry::operator *= (const Isometry & obj) const
   {
-    Matrix3 new_rotation = rotation_.dot(obj.rotation());
-    Vector3 new_point = rotation_.dot(obj.point()) + point_;
+    Matrix3 new_rotation = rotation_ * obj.rotation();
+    Vector3 new_point = rotation_ * obj.point() + point_;
     return Isometry(new_point, new_rotation);
   }
 
   Vector3 Isometry::transform (const std::initializer_list<double> & obj) const
   {
     Vector3 temp(obj);
-    return Vector3(rotation_.dot(temp) + point_);
+    return Vector3(rotation_ * temp + point_);
   }
 
   Isometry Isometry::inverse () const
@@ -377,7 +355,7 @@ namespace ekumen {
         (rotation_[0][0] * rotation_[1][2] - rotation_[0][2] * rotation_[1][0]) / det * -1,
         (rotation_[0][0] * rotation_[1][1] - rotation_[0][1] * rotation_[1][0]) / det
       );
-    Vector3 new_point(new_rotation.dot(point_));
+    Vector3 new_point(new_rotation * point_);
     return Isometry(-1 * new_point, new_rotation);
   }
 

@@ -93,7 +93,7 @@ class Matrix3 {
     Matrix3 & operator /= (const double & obj);
     Matrix3 operator * (const double & obj) const {return Matrix3(*this) *= obj;};
     Matrix3 operator / (const double & obj) const {return Matrix3(*this) /= obj;};
-    Vector3 operator * (const Vector3 & obj);
+    Vector3 operator * (const Vector3 & obj) const;
     Vector3 operator [] (const int index) const;
     Vector3 & operator [] (const int index);
     double det() const;
