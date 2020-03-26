@@ -365,24 +365,17 @@ namespace ekumen {
     double sin{std::sin(angle)};
 
     Matrix3 new_rotation;
-    if (point == Vector3::kUnitX) {
-        new_rotation = Matrix3(1., 0., 0.,
-                             0., cos, -sin,
-                             0., sin, cos);
-    }
-    else if (point == Vector3::kUnitY) {
-        new_rotation = Matrix3(cos, 0., sin,
-                             0., 1., 0.,
-                             -sin, 0., cos);
-    }
-    else if (point == Vector3::kUnitZ) {
-        new_rotation = Matrix3(cos, -sin, 0.,
-                             sin, cos, 0.,
-                             0., 0., 1.);
-    }
-    else {
-        throw std::runtime_error("Invalid rotation axis");
-    }
+
+    new_rotation[0][0] = cos + (point.x() * point.x()) * (1 - cos);
+    new_rotation[0][1] = point.x() * point.y() * (1 - cos) - point.z() * sin;
+    new_rotation[0][2] = point.x() * point.z() * (1 - cos) + point.y() * sin;
+    new_rotation[1][0] = point.y() * point.x() * (1 - cos) + point.z() * sin;
+    new_rotation[1][1] = cos + (point.y() * point.y()) * (1 - cos);
+    new_rotation[1][2] = point.y() * point.z() * (1 - cos) - point.x() * sin;
+    new_rotation[2][0] = point.z() * point.x() * (1 - cos) + point.y() * sin;
+    new_rotation[2][1] = point.z() * point.y() * (1 - cos) + point.x() * sin;
+    new_rotation[2][2] = cos + (point.z() * point.z()) * (1 - cos);
+    
     return Isometry(Vector3(), new_rotation);
   }
 
@@ -393,7 +386,5 @@ namespace ekumen {
                     Isometry::RotateAround(Vector3::kUnitZ, yaw));
   }
 
-=======
->>>>>>> matrix3 fixes
 }
 }
