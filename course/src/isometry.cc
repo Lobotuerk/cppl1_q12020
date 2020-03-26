@@ -393,7 +393,5 @@ namespace ekumen {
                     Isometry::RotateAround(Vector3::kUnitZ, yaw));
   }
 
-=======
->>>>>>> matrix3 fixes
 }
 }
