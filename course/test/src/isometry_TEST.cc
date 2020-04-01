@@ -18,45 +18,37 @@ namespace {
 
   testing::AssertionResult areAlmostEqual(const Isometry & obj1, const Isometry & obj2, const double tolerance)
   {
-    double diff = 0.;
-    diff += std::abs(obj1.point()[0] - obj2.point()[0]);
-    diff += std::abs(obj1.point()[1] - obj2.point()[1]);
-    diff += std::abs(obj1.point()[2] - obj2.point()[2]);
-    diff += std::abs(obj1.rotation()[0][0] - obj2.rotation()[0][0]);
-    diff += std::abs(obj1.rotation()[0][1] - obj2.rotation()[0][1]);
-    diff += std::abs(obj1.rotation()[0][2] - obj2.rotation()[0][2]);
-    diff += std::abs(obj1.rotation()[1][0] - obj2.rotation()[1][0]);
-    diff += std::abs(obj1.rotation()[1][1] - obj2.rotation()[1][1]);
-    diff += std::abs(obj1.rotation()[1][2] - obj2.rotation()[1][2]);
-    diff += std::abs(obj1.rotation()[2][0] - obj2.rotation()[2][0]);
-    diff += std::abs(obj1.rotation()[2][1] - obj2.rotation()[2][1]);
-    diff += std::abs(obj1.rotation()[2][2] - obj2.rotation()[2][2]);
-
-    if (diff < tolerance)
-    {
-      return testing::AssertionSuccess();
+    if (std::abs(obj1.translation()[0] - obj2.translation()[0]) > tolerance ||
+        std::abs(obj1.translation()[1] - obj2.translation()[1]) > tolerance ||
+        std::abs(obj1.translation()[2] - obj2.translation()[2]) > tolerance ||
+        std::abs(obj1.rotation()[0][0] - obj2.rotation()[0][0]) > tolerance ||
+        std::abs(obj1.rotation()[0][1] - obj2.rotation()[0][1]) > tolerance ||
+        std::abs(obj1.rotation()[0][2] - obj2.rotation()[0][2]) > tolerance ||
+        std::abs(obj1.rotation()[1][0] - obj2.rotation()[1][0]) > tolerance ||
+        std::abs(obj1.rotation()[1][1] - obj2.rotation()[1][1]) > tolerance ||
+        std::abs(obj1.rotation()[1][2] - obj2.rotation()[1][2]) > tolerance ||
+        std::abs(obj1.rotation()[2][0] - obj2.rotation()[2][0]) > tolerance ||
+        std::abs(obj1.rotation()[2][1] - obj2.rotation()[2][1]) > tolerance ||
+        std::abs(obj1.rotation()[2][2] - obj2.rotation()[2][2]) > tolerance){
+      return testing::AssertionFailure() << "The isometrys are not almost equal";
     }
-    return testing::AssertionFailure() << "The isometrys are not almost equal";
+    return testing::AssertionSuccess();
   }
 
   testing::AssertionResult areAlmostEqual(const Matrix3 & obj1, const Matrix3 & obj2, const double tolerance)
   {
-    double diff = 0.;
-    diff += std::abs(obj1[0][0] - obj2[0][0]);
-    diff += std::abs(obj1[0][1] - obj2[0][1]);
-    diff += std::abs(obj1[0][2] - obj2[0][2]);
-    diff += std::abs(obj1[1][0] - obj2[1][0]);
-    diff += std::abs(obj1[1][1] - obj2[1][1]);
-    diff += std::abs(obj1[1][2] - obj2[1][2]);
-    diff += std::abs(obj1[2][0] - obj2[2][0]);
-    diff += std::abs(obj1[2][1] - obj2[2][1]);
-    diff += std::abs(obj1[2][2] - obj2[2][2]);
-
-    if (diff < tolerance)
-    {
-      return testing::AssertionSuccess();
+    if (std::abs(obj1[0][0] - obj2[0][0]) > tolerance ||
+    std::abs(obj1[0][1] - obj2[0][1]) > tolerance ||
+    std::abs(obj1[0][2] - obj2[0][2]) > tolerance ||
+    std::abs(obj1[1][0] - obj2[1][0]) > tolerance ||
+    std::abs(obj1[1][1] - obj2[1][1]) > tolerance ||
+    std::abs(obj1[1][2] - obj2[1][2]) > tolerance ||
+    std::abs(obj1[2][0] - obj2[2][0]) > tolerance ||
+    std::abs(obj1[2][1] - obj2[2][1]) > tolerance ||
+    std::abs(obj1[2][2] - obj2[2][2]) > tolerance){
+      return testing::AssertionFailure() << "The isometrys are not almost equal";
     }
-    return testing::AssertionFailure() << "The isometrys are not almost equal";
+    return testing::AssertionSuccess();
   }
 
 GTEST_TEST(Vector3Test, Vector3Operations) {
