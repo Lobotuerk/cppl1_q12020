@@ -317,7 +317,7 @@ namespace ekumen {
     double det = this->det();
     if (det == 0)
     {
-      throw std::runtime_error("Matrix is not invertable");
+      throw std::runtime_error("Matrix is not invertible");
     }
     return Matrix3(
         (row2_[1] * row3_[2] - row2_[2] * row3_[1]) / det,
@@ -341,7 +341,7 @@ namespace ekumen {
 
   Vector3 Isometry::operator * (const Vector3 & obj) const
   {
-    return Vector3(rotation_ * obj + translation_);
+    return rotation_ * obj + translation_;
   }
 
   Isometry Isometry::operator *= (const Isometry & obj)
@@ -353,13 +353,13 @@ namespace ekumen {
 
   Vector3 Isometry::transform (const Vector3 & obj) const
   {
-    return Vector3(rotation_ * obj + translation_);
+    return rotation_ * obj + translation_;
   }
 
   Isometry Isometry::inverse () const
   {
-    Matrix3 new_rotation = rotation_.inverse();
-    Vector3 new_translation(new_rotation * translation_);
+    Matrix3 new_rotation{rotation_.inverse()};
+    Vector3 new_translation{new_rotation * translation_};
     return Isometry(-1 * new_translation, new_rotation);
   }
 
