@@ -3,7 +3,7 @@
 // needed to implement an isometry.
 
 // Consider including other header files if needed.
-#include "isometry.h"
+#include <isometry/isometry.hpp>
 
 #include <cmath>
 #include <sstream>

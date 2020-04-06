@@ -1,4 +1,4 @@
-#include <isometry.h>
+#include <isometry/isometry.hpp>
 
 namespace ekumen {
   namespace math {
