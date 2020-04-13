@@ -48,17 +48,11 @@ namespace math {
     x_list = *it++;
     y_list = *it++;
     z_list = *it;
-    if ( (x_list != x_) || (y_list != y_) || (z_list != z_) ) {
-      return false;
-    }
-    return true;
+    return !( (x_list != x_) || (y_list != y_) || (z_list != z_) );
   }
 
   bool Vector3::operator == (const Vector3 & obj) const {
-    if ( (obj[0] != x_) || (obj[1] != y_) || (obj[2] != z_) ) {
-      return false;
-    }
-    return true;
+    return !( (obj[0] != x_) || (obj[1] != y_) || (obj[2] != z_) );
   }
 
   Vector3 & Vector3::operator *= (const Vector3 & obj) {
@@ -72,6 +66,13 @@ namespace math {
     x_ /= obj.x();
     y_ /= obj.y();
     z_ /=  obj.z();
+    return *this;
+  }
+
+  Vector3 & Vector3::operator = (const Vector3& obj) {
+    x_ = obj.x();
+    y_ = obj.y();
+    z_ = obj.z();
     return *this;
   }
 
@@ -125,10 +126,7 @@ namespace math {
   const Matrix3 Matrix3::kOnes({1., 1., 1.}, {1., 1., 1.}, {1., 1., 1.});
 
   bool Matrix3::operator == (const Matrix3 & obj) const {
-    if (obj[0] != row1_ || obj[1] != row2_ || obj[2] != row3_) {
-      return false;
-    }
-    return true;
+    return !(obj[0] != row1_ || obj[1] != row2_ || obj[2] != row3_);
   }
 
   bool Matrix3::operator == (const std::initializer_list<double> & obj) const {
@@ -226,6 +224,13 @@ namespace math {
     return Matrix3(obj2[0] * obj1, obj2[1] * obj1, obj2[2] * obj1);
   }
 
+  Matrix3 & Matrix3::operator = (const Matrix3& obj) {
+    row1_ = obj.row(0);
+    row2_ = obj.row(1);
+    row3_ = obj.row(2);
+    return *this;
+  }
+
   double Matrix3::det() const {
     return ((row1_[0] * row2_[1] * row3_[2]) +
       (row1_[1] * row2_[2] * row3_[0]) +
@@ -284,6 +289,12 @@ namespace math {
   Isometry Isometry::operator *= (const Isometry & obj) {
     rotation_ *= obj.rotation();
     translation_ = rotation_ * obj.translation() + translation_;
+    return *this;
+  }
+
+  Isometry & Isometry::operator = (const Isometry& obj) {
+    rotation_ = obj.rotation();
+    translation_ = obj.translation();
     return *this;
   }
 

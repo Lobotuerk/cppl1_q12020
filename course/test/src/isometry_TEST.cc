@@ -141,7 +141,7 @@ GTEST_TEST(Matrix3Test, Matrix3Operations) {
 GTEST_TEST(IsometryTest, IsometryOperations) {
   const double kTolerance{1e-12};
   const Isometry t1 =
-    Isometry::FromTranslation(std::initializer_list<double>({1., 2., 3.}));
+    Isometry::FromTranslation(Vector3{1., 2., 3.});
   const Isometry t2{std::initializer_list<double>({1., 2., 3.}),
     Matrix3::kIdentity};
 
@@ -149,7 +149,7 @@ GTEST_TEST(IsometryTest, IsometryOperations) {
 
   // This is not mathematically correct but it could be a nice to have.
   EXPECT_EQ(t1 * Vector3(1., 1., 1.), Vector3(2., 3., 4.));
-  EXPECT_EQ(t1.transform(std::initializer_list<double>({1., 1., 1.})),
+  EXPECT_EQ(t1.transform(Vector3(std::initializer_list<double>({1., 1., 1.}))),
     Vector3(2., 3., 4.));
   EXPECT_EQ(t1.inverse() * Vector3(2., 3., 4.), Vector3(1., 1., 1.));
   EXPECT_EQ(t1 * t2 * Vector3(1., 1., 1.), Vector3(3., 5., 7.));

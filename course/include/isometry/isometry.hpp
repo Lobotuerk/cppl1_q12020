@@ -19,7 +19,15 @@ class Vector3 {
   static const Vector3 kZero;
 
   Vector3(double x, double y, double z): x_(x), y_(y), z_(z) {};
-  Vector3(std::initializer_list<double> row): x_(row.begin()[0]), y_(row.begin()[1]), z_(row.begin()[2]) {};
+  explicit Vector3(std::initializer_list<double> row) {
+    if(row.size() != 3) {
+      throw std::runtime_error("List has invalid amount of elements");
+    }
+    std::initializer_list<double>::iterator it = row.begin();
+    x_ = *it++;
+    y_ = *it++;
+    z_ = *it;
+  };
   Vector3(const Vector3 & obj): x_(obj[0]), y_(obj[1]), z_(obj[2]) {};
   Vector3(): x_(0.), y_(0.), z_(0.) {};
 
@@ -40,6 +48,7 @@ class Vector3 {
   Vector3 operator - (const Vector3 & obj) const {return Vector3(*this) -= obj;};
   Vector3 operator * (const Vector3 & obj) const {return Vector3(*this) *= obj;};
   Vector3 operator / (const Vector3 & obj) const {return Vector3(*this) /= obj;};
+  Vector3 & operator = (const Vector3 & obj);
   bool operator == (const std::initializer_list<double> & obj) const;
   bool operator == (const Vector3 & obj) const;
   bool operator != (const std::initializer_list<double> & obj) const {return !(*this == obj);};
@@ -94,6 +103,7 @@ class Matrix3 {
     Matrix3 operator * (const double & obj) const {return Matrix3(*this) *= obj;};
     Matrix3 operator / (const double & obj) const {return Matrix3(*this) /= obj;};
     Vector3 operator * (const Vector3 & obj) const;
+    Matrix3 & operator = (const Matrix3 & obj);
     Vector3 operator [] (const int index) const;
     Vector3 & operator [] (const int index);
     double det() const;
@@ -126,6 +136,7 @@ class Isometry {
     Vector3 operator * (const Vector3 & obj) const;
     Isometry operator *= (const Isometry & obj);
     Isometry operator * (const Isometry & obj) const {return Isometry(*this) *= obj;};
+    Isometry & operator = (const Isometry & obj);
     Vector3 transform(const Vector3 & obj) const;
     Isometry inverse() const;
     Isometry compose(const Isometry & obj) const {return Isometry(*this) *= obj;};
