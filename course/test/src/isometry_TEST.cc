@@ -142,7 +142,7 @@ GTEST_TEST(IsometryTest, IsometryOperations) {
   const double kTolerance{1e-12};
   const Isometry t1 =
     Isometry::FromTranslation(Vector3{1., 2., 3.});
-  const Isometry t2{std::initializer_list<double>({1., 2., 3.}),
+  const Isometry t2{Vector3{1., 2., 3.},
     Matrix3::kIdentity};
 
   EXPECT_EQ(t1, t2);
