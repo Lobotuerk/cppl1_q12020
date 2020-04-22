@@ -47,23 +47,26 @@ namespace {
     EXPECT_EQ(p * 2., Vector3(2., 4., 6.));
     EXPECT_EQ(q / 2., Vector3(2., 2.5, 3.));
     EXPECT_EQ(2 * q, Vector3(8., 10., 12.));
+    EXPECT_NEAR(p.dot(q), 32., kTolerance);
 
-    r += q;
+    EXPECT_EQ(r += q, Vector3(5., 6., 7.));
     EXPECT_EQ(r, std::initializer_list<double>({5., 6., 7.}));
-    r -= q;
+    EXPECT_EQ(r -= q, Vector3(1., 1., 1.));
     EXPECT_EQ(r, std::initializer_list<double>({1., 1., 1.}));
-    r *= q;
+    EXPECT_EQ(r *= q, Vector3(4., 5., 6.));
     EXPECT_EQ(r, std::initializer_list<double>({4., 5., 6.}));
-    r /= q;
+    EXPECT_EQ(r /= q, Vector3(1., 1., 1.));
     EXPECT_EQ(r, std::initializer_list<double>({1., 1., 1.}));
-    r *= 2;
+    EXPECT_EQ(r *= 2, Vector3(2., 2., 2.));
     EXPECT_EQ(r, std::initializer_list<double>({2., 2., 2.}));
-    r /= 2;
+    EXPECT_EQ(r /= 2, Vector3(1., 1., 1.));
     EXPECT_EQ(r, std::initializer_list<double>({1., 1., 1.}));
 
     r = Vector3(1., 2., 3.);
     EXPECT_TRUE(r == p);
     EXPECT_TRUE(r != q);
+    EXPECT_TRUE(r == std::initializer_list<double>({1., 2., 3.}));
+    EXPECT_TRUE(r != std::initializer_list<double>({1., 2., 0.}));
 
     EXPECT_NEAR(p.norm(), 3.7416573867739413, kTolerance);
     EXPECT_EQ(p.x(), 1.);
@@ -72,6 +75,9 @@ namespace {
     EXPECT_EQ(p[0], 1.);
     EXPECT_EQ(p[1], 2.);
     EXPECT_EQ(p[2], 3.);
+    EXPECT_ANY_THROW(p[-1]);
+    EXPECT_ANY_THROW(p[4]);
+    EXPECT_ANY_THROW(p[10]);
 
     std::stringstream ss;
     ss << p;
@@ -80,9 +86,30 @@ namespace {
     Vector3 t;
     EXPECT_EQ(t, Vector3::kZero);
     t.x() = 1.;
-    t[1] = 2.;
+    t.y() = 2.;
     t.z() = 3.;
     EXPECT_EQ(t, p);
+
+    t = Vector3();
+    EXPECT_EQ(t, Vector3::kZero);
+    t[0] = 1.;
+    t[1] = 2.;
+    t[2] = 3.;
+    EXPECT_EQ(t, p);
+    EXPECT_ANY_THROW(t[-1] = 0.);
+    EXPECT_ANY_THROW(t[4] = 0.);
+    EXPECT_ANY_THROW(t[10] = 0.);
+
+    EXPECT_NEAR(t.norm(), 3.7416573867739413, kTolerance);
+    EXPECT_EQ(t.x(), 1.);
+    EXPECT_EQ(t.y(), 2.);
+    EXPECT_EQ(t.z(), 3.);
+    EXPECT_EQ(t[0], 1.);
+    EXPECT_EQ(t[1], 2.);
+    EXPECT_EQ(t[2], 3.);
+    EXPECT_ANY_THROW(t[-1]);
+    EXPECT_ANY_THROW(t[4]);
+    EXPECT_ANY_THROW(t[10]);
   }
 
 }  // namespace
