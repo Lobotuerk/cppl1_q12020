@@ -85,32 +85,13 @@ namespace {
     ss << m3;
     EXPECT_EQ(ss.str(), "[[1, 2, 3], [4, 5, 6], [7, 8, 9]]");
 
-    const std::vector<Vector3> kExpectedRows{Vector3(1., 2., 3.),
-        Vector3(4., 5., 6.), Vector3(7., 8., 9.)};
-    const std::vector<Vector3> kExpectedCols{Vector3(1., 4., 7.),
-        Vector3(2., 5., 8.), Vector3(3., 6., 9.)};
+    EXPECT_EQ(m2.row(0), Vector3(1., 2., 3.));
+    EXPECT_EQ(m2.row(1), Vector3(4., 5., 6.));
+    EXPECT_EQ(m2.row(2), Vector3(7., 8., 9.));
 
-    for (const Vector3& r : kExpectedRows) {
-      int found{0};
-      for (int i = 0; i < 3; ++i) {
-        if (r == m2.row(i)) {
-          found++;
-          break;
-        }
-      }
-      ASSERT_EQ(found, 1);
-    }
-
-    for (const Vector3& c : kExpectedCols) {
-      int found{0};
-      for (int i = 0; i < 3; ++i) {
-        if (c == m2.col(i)) {
-          found++;
-          break;
-        }
-      }
-      ASSERT_EQ(found, 1);
-    }
+    EXPECT_EQ(m2.col(0), Vector3(1., 4., 7.));
+    EXPECT_EQ(m2.col(1), Vector3(2., 5., 8.));
+    EXPECT_EQ(m2.col(2), Vector3(3., 6., 9.));
 
     EXPECT_EQ(m2[0][0], 1);
     EXPECT_EQ(m2[0][1], 2);

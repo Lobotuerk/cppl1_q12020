@@ -78,7 +78,7 @@ class Matrix3 {
     static const Matrix3 kZero;
     static const Matrix3 kOnes;
     Matrix3(std::initializer_list<double> row1, std::initializer_list<double> row2,
-       std::initializer_list<double> row3): row1_(row1), row2_(row2), row3_(row3) {};
+       std::initializer_list<double> row3): Matrix3(), row1_(row1), row2_(row2), row3_(row3) {};
     Matrix3(double x1, double y1, double z1, double x2, double y2, double z2,
        double x3, double y3, double z3): row1_(x1, y1, z1), row2_(x2, y2, z2), row3_(x3, y3, z3) {};
     Matrix3(const Vector3 & vec1, const Vector3 & vec2, const Vector3 & vec3): row1_(vec1), row2_(vec2), row3_(vec3) {};
