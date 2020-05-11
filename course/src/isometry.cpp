@@ -12,30 +12,30 @@ namespace math {
   const Vector3 Vector3::kZero(0., 0., 0.);
 
   Vector3 & Vector3::operator *= (const double & obj) {
-    x_ *= obj;
-    y_ *= obj;
-    z_ *=  obj;
+    v_->x_ *= obj;
+    v_->y_ *= obj;
+    v_->z_ *=  obj;
     return *this;
   }
 
   Vector3 & Vector3::operator /= (const double & obj) {
-    x_ /= obj;
-    y_ /= obj;
-    z_ /=  obj;
+    v_->x_ /= obj;
+    v_->y_ /= obj;
+    v_->z_ /=  obj;
     return *this;
   }
 
   Vector3 & Vector3::operator += (const Vector3 & obj) {
-    x_ += obj.x();
-    y_ += obj.y();
-    z_ +=  obj.z();
+    v_->x_ += obj.x();
+    v_->y_ += obj.y();
+    v_->z_ +=  obj.z();
     return *this;
   }
 
   Vector3 & Vector3::operator -= (const Vector3 & obj) {
-    x_ -= obj.x();
-    y_ -= obj.y();
-    z_ -=  obj.z();
+    v_->x_ -= obj.x();
+    v_->y_ -= obj.y();
+    v_->z_ -=  obj.z();
     return *this;
   }
 
@@ -48,36 +48,50 @@ namespace math {
     x_list = *it++;
     y_list = *it++;
     z_list = *it;
-    return !( (x_list != x_) || (y_list != y_) || (z_list != z_) );
+    return !( (x_list != v_->x_) || (y_list != v_->y_) || (z_list != v_->z_) );
   }
 
   bool Vector3::operator == (const Vector3 & obj) const {
-    return !( (obj[0] != x_) || (obj[1] != y_) || (obj[2] != z_) );
+    return !( (obj[0] != v_->x_) || (obj[1] != v_->y_) || (obj[2] != v_->z_) );
   }
 
   Vector3 & Vector3::operator *= (const Vector3 & obj) {
-    x_ *= obj.x();
-    y_ *= obj.y();
-    z_ *=  obj.z();
+    v_->x_ *= obj.x();
+    v_->y_ *= obj.y();
+    v_->z_ *=  obj.z();
     return *this;
   }
 
   Vector3 & Vector3::operator /= (const Vector3 & obj) {
-    x_ /= obj.x();
-    y_ /= obj.y();
-    z_ /=  obj.z();
+    v_->x_ /= obj.x();
+    v_->y_ /= obj.y();
+    v_->z_ /=  obj.z();
     return *this;
   }
 
-  Vector3 & Vector3::operator = (const Vector3& obj) {
-    x_ = obj.x();
-    y_ = obj.y();
-    z_ = obj.z();
+  Vector3 & Vector3::operator = (const Vector3 & obj) {
+    if (&obj != this) {
+      v_->x_ = obj.v_->x_;
+      v_->y_ = obj.v_->y_;
+      v_->z_ = obj.v_->z_;
+    }
+
+    return *this;
+  };
+
+  Vector3 & Vector3::operator = (Vector3 && obj) noexcept {
+    if (&obj != this) {
+      delete v_;
+      v_ = obj.v_;
+      obj.v_ = nullptr;
+    }
+
     return *this;
   }
 
   double Vector3::norm() const {
-    return sqrt( std::pow(x_, 2.0) + std::pow(y_, 2.0) + std::pow(z_, 2.0) );
+    return sqrt( std::pow(v_->x_, 2.0) + std::pow(v_->y_, 2.0) +
+      std::pow(v_->z_, 2.0) );
   }
 
   Vector3 operator * (const double & obj1, const Vector3 & obj2) {
@@ -88,11 +102,11 @@ namespace math {
     if (index > 2 || index < 0) {
       throw std::runtime_error("Index not valid");
     } else if (index == 0) {
-      return x_;
+      return v_->x_;
     } else if (index == 1) {
-      return y_;
+      return v_->y_;
     } else {
-      return z_;
+      return v_->z_;
     }
   }
 
@@ -100,23 +114,24 @@ namespace math {
     if (index > 2 || index < 0) {
       throw std::runtime_error("Index not valid");
     } else if (index == 0) {
-      return x_;
+      return v_->x_;
     } else if (index == 1) {
-      return y_;
+      return v_->y_;
     } else {
-      return z_;
+      return v_->z_;
     }
   }
 
   Vector3 Vector3::cross(const Vector3 & obj) const {
     return Vector3(
-                y_ * obj.z_ - z_ * obj.y_,
-                z_ * obj.x_ - x_ * obj.z_,
-                x_ * obj.y_ - y_ * obj.x_);
+                v_->y_ * obj.v_->z_ - v_->z_ * obj.v_->y_,
+                v_->z_ * obj.v_->x_ - v_->x_ * obj.v_->z_,
+                v_->x_ * obj.v_->y_ - v_->y_ * obj.v_->x_);
   }
 
   double Vector3::dot(const Vector3 & obj) const {
-    return (x_ * obj.x_) + (y_ * obj.y_) + (z_ * obj.z_);
+    return (v_->x_ * obj.v_->x_) + (v_->y_ * obj.v_->y_) +
+      (v_->z_ * obj.v_->z_);
   }
 
   // Matrix3

@@ -8,6 +8,10 @@
 #include <iostream>
 #include <iomanip>
 
+struct Elements {
+  double x_,y_,z_;
+};
+
 namespace ekumen {
   namespace math {
 
@@ -18,25 +22,35 @@ class Vector3 {
   static const Vector3 kUnitZ;
   static const Vector3 kZero;
 
-  Vector3(double x, double y, double z): x_(x), y_(y), z_(z) {};
-  explicit Vector3(std::initializer_list<double> row) {
+  Vector3(double x, double y, double z): Vector3() {
+    v_->x_ = x;
+    v_->y_ = y;
+    v_->z_ = z;
+  };
+  explicit Vector3(std::initializer_list<double> row): Vector3() {
     if(row.size() != 3) {
       throw std::runtime_error("List has invalid amount of elements");
     }
     std::initializer_list<double>::iterator it = row.begin();
-    x_ = *it++;
-    y_ = *it++;
-    z_ = *it;
+    v_->x_ = *it++;
+    v_->y_ = *it++;
+    v_->z_ = *it;
   };
-  Vector3(const Vector3 & obj): x_(obj[0]), y_(obj[1]), z_(obj[2]) {};
-  Vector3(): x_(0.), y_(0.), z_(0.) {};
+  Vector3(const Vector3 & obj): v_{new Elements{*(obj.v_)}} {};
+  Vector3(): v_{new Elements{}} {};
+  Vector3(Vector3 && obj): v_{obj.v_}
+  {
+    obj.v_ = nullptr;
+  }
 
-  const double & x() const {return x_;};
-  const double & y() const {return y_;};
-  const double & z() const {return z_;};
-  double & x() {return x_;};
-  double & y() {return y_;};
-  double & z() {return z_;};
+  ~Vector3() {delete v_;};
+
+  const double & x() const {return v_->x_;};
+  const double & y() const {return v_->y_;};
+  const double & z() const {return v_->z_;};
+  double & x() {return v_->x_;};
+  double & y() {return v_->y_;};
+  double & z() {return v_->z_;};
 
   const double & operator [] (const int index) const;
   double & operator [] (const int index);
@@ -49,6 +63,7 @@ class Vector3 {
   Vector3 operator * (const Vector3 & obj) const {return Vector3(*this) *= obj;};
   Vector3 operator / (const Vector3 & obj) const {return Vector3(*this) /= obj;};
   Vector3 & operator = (const Vector3 & obj);
+  Vector3 & operator = (Vector3 && obj) noexcept;
   bool operator == (const std::initializer_list<double> & obj) const;
   bool operator == (const Vector3 & obj) const;
   bool operator != (const std::initializer_list<double> & obj) const {return !(*this == obj);};
@@ -67,7 +82,7 @@ class Vector3 {
             return os;
         };
  private:
-   double x_,y_,z_;
+   Elements *v_;
 };
 
 Vector3 operator * (const double & obj1, const Vector3 & obj2);
