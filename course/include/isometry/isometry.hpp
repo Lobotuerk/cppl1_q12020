@@ -128,7 +128,7 @@ class Matrix3 {
     Matrix3 operator * (const double & obj) const {return Matrix3(*this) *= obj;};
     Matrix3 operator / (const double & obj) const {return Matrix3(*this) /= obj;};
     Vector3 operator * (const Vector3 & obj) const;
-    Matrix3 & operator = (const Matrix3 & obj);
+    Matrix3 & operator = (const Matrix3 & obj) = default;
     Matrix3 & operator = (Matrix3 && obj) noexcept;
     Vector3 operator [] (const int index) const;
     Vector3 & operator [] (const int index);
@@ -151,7 +151,7 @@ class Isometry {
   public:
     Isometry(const Vector3 & translation, const Matrix3 & rotation): translation_(translation), rotation_(rotation) {};
     Isometry(const Isometry & obj): translation_(obj.translation()), rotation_(obj.rotation()) {};
-    // Isometry(Isometry && obj): translation_(std::move(obj.translation())), rotation_(std::move(obj.rotation())) {};
+    Isometry(Isometry && obj): translation_(std::move(obj.translation())), rotation_(std::move(obj.rotation())) {};
     Isometry(): translation_(), rotation_() {};
     static Isometry FromTranslation(const Vector3 & translation){return Isometry(translation, Matrix3::kIdentity);};
     static Isometry RotateAround(const Vector3 & translation, double angle);
@@ -164,8 +164,8 @@ class Isometry {
     Vector3 operator * (const Vector3 & obj) const;
     Isometry operator *= (const Isometry & obj);
     Isometry operator * (const Isometry & obj) const {return Isometry(*this) *= obj;};
-    Isometry & operator = (const Isometry & obj);
-    // Isometry & operator = (Isometry && obj);
+    Isometry & operator = (const Isometry & obj) = default;
+    Isometry & operator = (Isometry && obj) noexcept;
     Vector3 transform(const Vector3 & obj) const;
     Isometry inverse() const;
     Isometry compose(const Isometry & obj) const {return Isometry(*this) *= obj;};

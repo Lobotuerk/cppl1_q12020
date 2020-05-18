@@ -239,17 +239,10 @@ namespace math {
     return Matrix3(obj2[0] * obj1, obj2[1] * obj1, obj2[2] * obj1);
   }
 
-  Matrix3 & Matrix3::operator = (const Matrix3 & obj) {
-    row1_ = obj.row(0);
-    row2_ = obj.row(1);
-    row3_ = obj.row(2);
-    return *this;
-  }
-
   Matrix3 & Matrix3::operator = (Matrix3 && obj) noexcept {
-    row1_ = std::move(obj[0]);
-    row2_ = std::move(obj[1]);
-    row3_ = std::move(obj[2]);
+    row1_ = std::move(obj.row1_);
+    row2_ = std::move(obj.row2_);
+    row3_ = std::move(obj.row3_);
     return *this;
   }
 
@@ -314,17 +307,11 @@ namespace math {
     return *this;
   }
 
-  Isometry & Isometry::operator = (const Isometry & obj) {
-    rotation_ = obj.rotation();
-    translation_ = obj.translation();
+  Isometry & Isometry::operator = (Isometry && obj) noexcept {
+    rotation_ = std::move(obj.rotation_);
+    translation_ = std::move(obj.translation_);
     return *this;
   }
-
-  // Isometry & Isometry::operator = (Isometry && obj) {
-  //   rotation_ = std::move(obj.rotation());
-  //   translation_ = std::move(obj.translation());
-  //   return *this;
-  // }
 
   Vector3 Isometry::transform(const Vector3 & obj) const {
     return rotation_ * obj + translation_;
