@@ -139,6 +139,20 @@ namespace {
     EXPECT_ANY_THROW(m4[0][4] = 0);
     EXPECT_ANY_THROW(m4[1234][0] = 0);
     EXPECT_ANY_THROW(m4[0][1234] = 0);
+
+    Matrix3 m4_moved = std::move(m4);
+    EXPECT_TRUE(m4_moved[0].get_moved());
+    EXPECT_TRUE(m4_moved[1].get_moved());
+    EXPECT_TRUE(m4_moved[2].get_moved());
+    EXPECT_EQ(m4_moved[0][0], 1);
+    EXPECT_EQ(m4_moved[0][1], 2);
+    EXPECT_EQ(m4_moved[0][2], 3);
+    EXPECT_EQ(m4_moved[1][0], 4);
+    EXPECT_EQ(m4_moved[1][1], 5);
+    EXPECT_EQ(m4_moved[1][2], 6);
+    EXPECT_EQ(m4_moved[2][0], 7);
+    EXPECT_EQ(m4_moved[2][1], 8);
+    EXPECT_EQ(m4_moved[2][2], 10);
   }
 
 
