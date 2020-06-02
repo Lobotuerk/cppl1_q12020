@@ -110,6 +110,13 @@ namespace {
     EXPECT_ANY_THROW(t[-1]);
     EXPECT_ANY_THROW(t[4]);
     EXPECT_ANY_THROW(t[10]);
+
+    Vector3 t_moved = std::move(t);
+    EXPECT_TRUE(t_moved.get_moved());
+    EXPECT_NEAR(t_moved.norm(), 3.7416573867739413, kTolerance);
+    EXPECT_EQ(t_moved.x(), 1.);
+    EXPECT_EQ(t_moved.y(), 2.);
+    EXPECT_EQ(t_moved.z(), 3.);
   }
 
 }  // namespace

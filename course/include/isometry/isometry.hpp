@@ -8,6 +8,10 @@
 #include <iostream>
 #include <iomanip>
 
+struct Elements {
+  double x_,y_,z_;
+};
+
 namespace ekumen {
   namespace math {
 
@@ -18,25 +22,39 @@ class Vector3 {
   static const Vector3 kUnitZ;
   static const Vector3 kZero;
 
-  Vector3(double x, double y, double z): x_(x), y_(y), z_(z) {};
-  explicit Vector3(std::initializer_list<double> row) {
+  Vector3(double x, double y, double z): Vector3() {
+    v_->x_ = x;
+    v_->y_ = y;
+    v_->z_ = z;
+  };
+  explicit Vector3(std::initializer_list<double> row): Vector3() {
     if(row.size() != 3) {
       throw std::runtime_error("List has invalid amount of elements");
     }
     std::initializer_list<double>::iterator it = row.begin();
-    x_ = *it++;
-    y_ = *it++;
-    z_ = *it;
+    v_->x_ = *it++;
+    v_->y_ = *it++;
+    v_->z_ = *it;
   };
-  Vector3(const Vector3 & obj): x_(obj[0]), y_(obj[1]), z_(obj[2]) {};
-  Vector3(): x_(0.), y_(0.), z_(0.) {};
+  Vector3(const Vector3 & obj): v_{new Elements{*(obj.v_)}} {};
+  Vector3(): v_{new Elements{}} {
+    v_->x_ = 0;
+    v_->y_ = 0;
+    v_->z_ = 0;
+  };
+  Vector3(Vector3 && obj): v_{obj.v_}, moved_{true}
+  {
+    obj.v_ = nullptr;
+  }
 
-  const double & x() const {return x_;};
-  const double & y() const {return y_;};
-  const double & z() const {return z_;};
-  double & x() {return x_;};
-  double & y() {return y_;};
-  double & z() {return z_;};
+  ~Vector3() {delete v_;};
+
+  const double & x() const {return v_->x_;};
+  const double & y() const {return v_->y_;};
+  const double & z() const {return v_->z_;};
+  double & x() {return v_->x_;};
+  double & y() {return v_->y_;};
+  double & z() {return v_->z_;};
 
   const double & operator [] (const int index) const;
   double & operator [] (const int index);
@@ -49,6 +67,7 @@ class Vector3 {
   Vector3 operator * (const Vector3 & obj) const {return Vector3(*this) *= obj;};
   Vector3 operator / (const Vector3 & obj) const {return Vector3(*this) /= obj;};
   Vector3 & operator = (const Vector3 & obj);
+  Vector3 & operator = (Vector3 && obj) noexcept;
   bool operator == (const std::initializer_list<double> & obj) const;
   bool operator == (const Vector3 & obj) const;
   bool operator != (const std::initializer_list<double> & obj) const {return !(*this == obj);};
@@ -66,8 +85,13 @@ class Vector3 {
             os << std::string("(x: ") << v.x() << ", y: " << v.y() << ", z: " << v.z() << ")";
             return os;
         };
+
+  bool get_moved() {
+    return moved_;
+  }
  private:
-   double x_,y_,z_;
+   Elements *v_;
+   bool moved_{false};
 };
 
 Vector3 operator * (const double & obj1, const Vector3 & obj2);
@@ -83,7 +107,8 @@ class Matrix3 {
        double x3, double y3, double z3): row1_(x1, y1, z1), row2_(x2, y2, z2), row3_(x3, y3, z3) {};
     Matrix3(const Vector3 & vec1, const Vector3 & vec2, const Vector3 & vec3): row1_(vec1), row2_(vec2), row3_(vec3) {};
     Matrix3(const Matrix3 & obj): row1_(obj[0]), row2_(obj[1]), row3_(obj[2]) {};
-    Matrix3(): row1_(0., 0., 0.), row2_(0., 0., 0.), row3_(0., 0., 0.) {};
+    Matrix3(): row1_(), row2_(), row3_() {};
+    Matrix3(Matrix3 && obj): row1_(std::move(obj[0])), row2_(std::move(obj[1])), row3_(std::move(obj[2])) {};
     Vector3 row(const int index) const;
     Vector3 col(const int index) const;
     bool operator == (const Matrix3 & obj) const;
@@ -103,7 +128,8 @@ class Matrix3 {
     Matrix3 operator * (const double & obj) const {return Matrix3(*this) *= obj;};
     Matrix3 operator / (const double & obj) const {return Matrix3(*this) /= obj;};
     Vector3 operator * (const Vector3 & obj) const;
-    Matrix3 & operator = (const Matrix3 & obj);
+    Matrix3 & operator = (const Matrix3 & obj) = default;
+    Matrix3 & operator = (Matrix3 && obj) noexcept;
     Vector3 operator [] (const int index) const;
     Vector3 & operator [] (const int index);
     double det() const;
@@ -125,6 +151,8 @@ class Isometry {
   public:
     Isometry(const Vector3 & translation, const Matrix3 & rotation): translation_(translation), rotation_(rotation) {};
     Isometry(const Isometry & obj): translation_(obj.translation()), rotation_(obj.rotation()) {};
+    Isometry(Isometry && obj): translation_(std::move(obj.translation())), rotation_(std::move(obj.rotation())) {};
+    Isometry(): translation_(), rotation_() {};
     static Isometry FromTranslation(const Vector3 & translation){return Isometry(translation, Matrix3::kIdentity);};
     static Isometry RotateAround(const Vector3 & translation, double angle);
     static Isometry FromEulerAngles(double roll, double pitch, double yaw);
@@ -136,7 +164,8 @@ class Isometry {
     Vector3 operator * (const Vector3 & obj) const;
     Isometry operator *= (const Isometry & obj);
     Isometry operator * (const Isometry & obj) const {return Isometry(*this) *= obj;};
-    Isometry & operator = (const Isometry & obj);
+    Isometry & operator = (const Isometry & obj) = default;
+    Isometry & operator = (Isometry && obj) noexcept;
     Vector3 transform(const Vector3 & obj) const;
     Isometry inverse() const;
     Isometry compose(const Isometry & obj) const {return Isometry(*this) *= obj;};
